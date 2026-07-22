@@ -51,6 +51,7 @@ def run(input):
         "half-vert": calc_album_count(width / 2 - PADDING_W, height - PADDING_H, num_cols["half-vert"]),
         "quad": calc_album_count(width / 2 - PADDING_W, height / 2 - PADDING_H, num_cols["quad"]),
     }
+    abs_max_albums = max(max_albums.values())
 
     albums = []
     if "topalbums" in input and "album" in input["topalbums"]:
@@ -62,6 +63,8 @@ def run(input):
                     "artist": album["artist"]["name"] if "artist" in album else "",
                     "image": image,
                 })
+            if len(albums) >= abs_max_albums:
+                break
     elif "recenttracks" in input and "track" in input["recenttracks"]:
         already_collected_albums = set()
         for track in input["recenttracks"]["track"]:
@@ -77,8 +80,10 @@ def run(input):
                         "artist": artist_name,
                         "image": image,
                     })
+                    if len(albums) >= abs_max_albums:
+                        break
 
     if len(albums) < 1:
         return {"errors": ["Last.fm API did not return any albums"]}
 
-    return {"data": {"albums": albums[:(max(max_albums.values()))]}, "num_cols": num_cols, "max_albums": max_albums}
+    return {"data": {"albums": albums}, "num_cols": num_cols, "max_albums": max_albums}
