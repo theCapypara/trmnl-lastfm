@@ -1,0 +1,53 @@
+#
+# Changes to this file will be overwritten by `trmnlp pull`.
+#
+# Docs: https://help.usetrmnl.com/en/articles/10542599-importing-and-exporting-private-plugins#h_581fb988f0
+#
+---
+name: Last.fm Album Grid
+strategy: polling
+polling_verb: get
+polling_url: '{% if range == "recent" %}http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={{ username }}&api_key={{ api_key }}&limit=100&format=json{% else %}http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user={{ username }}&api_key={{ api_key }}&period={{ range }}&format=json{% endif %}'
+polling_headers: ''
+refresh_interval: 1440
+
+no_screen_padding: 'no'
+dark_mode: 'no'
+
+custom_fields:
+  - keyname: info
+    field_type: author_bio
+    name: About This Plugin
+    description: |
+      This plugin displays your recent or top albums on Last.fm as a grid.
+    description-de: |
+      Dieses Plugin zeigt deine zuletzt gespielten oder Top-Alben von Last.fm als Gitter.
+    category: entertainment,personal
+    github_url: "https://github.com/theCapypara/trmnl-lastfm"
+  - keyname: api_key
+    field_type: string
+    name: API Key
+    description: |
+      Your Last.fm API Key - Get your API Key <a href="https://www.Last.fm/api" class="underline" target="_blank">here</a>.
+    description-de: |
+      Dein Last.fm API Schlüssel - Du kannst dir <a href="https://www.last.fm/api" class="underline" target="_blank">hier</a> einen erstellen.
+    placeholder: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  - keyname: username
+    field_type: string
+    name: Username
+  - keyname: range
+    field_type: select
+    name: Range
+    options:
+      - Recently Played: recent
+      - 1 Week: 7day
+      - 1 Month: 1month
+      - 3 Months: 3month
+      - 6 Months: 6month
+      - 12 Months: 12month
+      - Overall: overall
+    description: |
+      If set to "Recently Played", your most recently played albums are shown, otherwise your top albums in the given range.
+    description-de: |
+      Falls "Recently Played" ausgewählt ist, werden deine zuletzt gespielten Alben gezeigt, ansonsten deine Top-Alben im jeweiligen Zeitraum.
+    default: 1month

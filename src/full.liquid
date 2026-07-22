@@ -1,0 +1,6 @@
+{% if errors %}
+    {% render "error_info", errors: errors %}
+{% else %}
+    {% render "content", data: data, num_cols: num_cols["full"] %}
+{% endif %}
+{% render "title_bar", data: data, trmnl: trmnl %}
