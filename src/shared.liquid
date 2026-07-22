@@ -2,7 +2,7 @@
 {% assign gridId = "grid-" | append_random %}
 <div class="layout layout--col p--2">
     <div id="{{ gridId }}" class="grid w--full grid--cols-{{ num_cols }} gap--small">
-        {% for album in data.albums %}
+        {% for album in data.albums limit:max_albums %}
             <img
                     src="{{ album['image'] }}"
                     class="
@@ -14,23 +14,6 @@
         {% endfor %}
     </div>
 </div>
-<script>
-    // Remove all overflowing elements
-    const grid = document.querySelector('#{{ gridId }}');
-    const bottom = grid.parentElement.getBoundingClientRect().bottom - 15;
-    const gridElems = grid.querySelectorAll('#{{ gridId }} *');
-    outer: while (true) {
-        for (const el of gridElems) {
-            if (el.getBoundingClientRect().bottom >= bottom) {
-                el.style.display = 'none';
-                // we restart iteration since elements may have reflowed now. a bit hacky,
-                // happy to hear better solutions to this.
-                continue outer;
-            }
-        }
-        break;
-    }
-</script>
 {% endtemplate %}
 
 {% template title_bar %}

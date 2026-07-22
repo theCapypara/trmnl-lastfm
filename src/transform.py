@@ -1,3 +1,6 @@
+from math import floor
+
+
 def get_album_image(album, size_priority):
     images = {image["size"]: image["#text"] for image in album["image"]}
     image = None
@@ -13,24 +16,41 @@ def get_album_image(album, size_priority):
     return image
 
 
+PADDING_H = 60
+PADDING_W = 60
+GAP_SIZE = 7
+
+
+def calc_album_count(w, h, col):
+    single_size = (w / col) + GAP_SIZE
+    rows = floor(h / single_size)
+
+    v = rows * col
+    return floor(v)
+
+
 def run(input):
     width = input["trmnl"]["device"]["width"]
+    height = input["trmnl"]["device"]["height"]
     if width <= 600:  # sm
         # priorities for album cover sizes depending on device size
         size_priority = ["medium", "large", "extralarge"]
-        # max album count to send to frontend
-        max_albums = 4
         # grid size is the base grid size for this size class & layout
         # first elem is num columns, second num rows
         num_cols = {"full": 2, "half": 2, "half-vert": 2, "quad": 2}
     elif width <= 800:  # md
         size_priority = ["large", "extralarge", "medium"]
-        max_albums = 8
         num_cols = {"full": 4, "half": 5, "half-vert": 2, "quad": 2}
     else:  # lg
         size_priority = ["extralarge", "large", "medium"]
-        max_albums = 15
         num_cols = {"full": 5, "half": 4, "half-vert": 3, "quad": 2}
+
+    max_albums = {
+        "full": calc_album_count(width - PADDING_W, height - PADDING_H, num_cols["full"]),
+        "half": calc_album_count(width - PADDING_W, height / 2 - PADDING_H, num_cols["half"]),
+        "half-vert": calc_album_count(width / 2 - PADDING_W, height - PADDING_H, num_cols["half-vert"]),
+        "quad": calc_album_count(width / 2 - PADDING_W, height / 2 - PADDING_H, num_cols["quad"]),
+    }
 
     albums = []
     if "topalbums" in input and "album" in input["topalbums"]:
@@ -61,4 +81,4 @@ def run(input):
     if len(albums) < 1:
         return {"errors": ["Last.fm API did not return any albums"]}
 
-    return {"data": {"albums": albums[:max_albums]}, "num_cols": num_cols}
+    return {"data": {"albums": albums[:(max(max_albums.values()))]}, "num_cols": num_cols, "max_albums": max_albums}

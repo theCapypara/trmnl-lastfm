@@ -1,6 +1,6 @@
 {% if errors %}
     {% render "error_info", errors: errors %}
 {% else %}
-    {% render "content", data: data, num_cols: num_cols["full"] %}
+    {% render "content", data: data, num_cols: num_cols["full"], max_albums: max_albums["full"] %}
 {% endif %}
 {% render "title_bar", data: data, trmnl: trmnl %}
